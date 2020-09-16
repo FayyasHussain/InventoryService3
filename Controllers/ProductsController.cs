@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InventoryService3.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Runtime.CompilerServices;
 
 namespace InventoryService3.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -93,6 +94,7 @@ namespace InventoryService3.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
+
         public async Task<ActionResult<Products>> PostProducts(Products products)
         {
             _context.Products.Add(products);
@@ -115,6 +117,15 @@ namespace InventoryService3.Controllers
             await _context.SaveChangesAsync();
 
             return products;
+        }
+
+        [HttpGet]
+        [Route("CheapProduct")]
+
+        public IEnumerable<Products> GetCheapProduct()
+        {
+            var cheapProduct = _context.Products.Where(x => x.UnitPrice == _context.Products.Min(a => a.UnitPrice));
+            return cheapProduct;
         }
 
         private bool ProductsExists(int id)
